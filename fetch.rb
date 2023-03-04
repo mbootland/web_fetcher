@@ -20,13 +20,15 @@ class WebPageFetcher
 
         # Set metadata
         num_links = doc.css('a').count
+
+        # See limitations on counting in the README file 
         num_images = doc.css('img, picture source, noscript img').count
         last_fetch = DateTime.now
 
         metadata = {
           site: URI(url).host,
           num_links: num_links,
-          num_images: num_images,
+          images: num_images,
           last_fetch: last_fetch.to_s
         }
 
@@ -39,7 +41,7 @@ class WebPageFetcher
         puts "Metadata for #{url}:"
         puts "site: #{metadata[:site]}"
         puts "num_links: #{metadata[:num_links]}"
-        puts "num_images: #{metadata[:num_images]}"
+        puts "num_images: #{metadata[:images]}"
         puts "last_fetch: #{metadata[:last_fetch]}"
       rescue StandardError => e
         puts "Error while fetching #{url}: #{e.message}"
@@ -86,8 +88,8 @@ class WebPageFetcher
           download_asset(base_url.merge(srcset_url), img_filename)
         end
       end
-      
-      # If the css includes a transition, remove it and the opacity.
+
+      # If the css includes a transition, remove it and the opacity. See README limitations
       if img['style']&.include?('transition')
         img['style'] = img['style']
           .gsub(/transition:.+?;/, '')
