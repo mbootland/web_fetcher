@@ -11,12 +11,17 @@ class WebPageFetcher
   def self.fetch(urls)
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    options.add_argument('--disable-dev-shm-usage')
+    options.add_argument('--page-load-strategy=none')
+    options.add_argument('--window-size=1920,1080')
     driver = Selenium::WebDriver.for :chrome, options: options
+    driver.manage.timeouts.implicit_wait = 600 # Set wait time to 60 seconds
+    driver.manage.timeouts.page_load = 120
 
     urls.each do |url|
       begin
         driver.navigate.to(url)
-        sleep(3)
         html = driver.page_source
         doc = Nokogiri::HTML(html)
 
