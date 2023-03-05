@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'selenium-webdriver'
 require 'open-uri'
 require 'nokogiri'
 require 'date'
@@ -8,9 +9,17 @@ require 'uri'
 
 class WebPageFetcher
   def self.fetch(urls)
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('--headless')
+    options.add_argument('--no-sandbox')
+    driver = Selenium::WebDriver.for :chrome, options: options
+
     urls.each do |url|
       begin
-        doc = Nokogiri::HTML(URI.open(url))
+        driver.navigate.to(url)
+        # sleep(3)
+        html = driver.page_source
+        doc = Nokogiri::HTML(html)
 
         # Save the web page to disk
         filename = "#{URI(url).host}.html"
@@ -21,7 +30,7 @@ class WebPageFetcher
         # Set metadata
         num_links = doc.css('a').count
 
-        # See limitations on counting in the README file 
+        # See limitations on counting in the README file
         num_images = doc.css('img, picture source, noscript img').count
         last_fetch = DateTime.now
 
@@ -47,6 +56,8 @@ class WebPageFetcher
         puts "Error while fetching #{url}: #{e.message}"
       end
     end
+  ensure
+    driver.quit if driver
   end
 
   def self.fix_image_urls(doc, url)
@@ -87,13 +98,6 @@ class WebPageFetcher
           # Download the image to the assets folder
           download_asset(base_url.merge(srcset_url), img_filename)
         end
-      end
-
-      # If the css includes a transition, remove it and the opacity. See README limitations
-      if img['style']&.include?('transition')
-        img['style'] = img['style']
-          .gsub(/transition:.+?;/, '')
-          .gsub(/opacity:\s*0(;|$)/, '')
       end
     end
 
