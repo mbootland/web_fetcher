@@ -1,4 +1,4 @@
-Steps
+Steps (Assuming Docker is installed on your machine)
 - git clone https://github.com/mbootland/web_fetcher.git
 - cd web_fetcher/
 - rm -rf output (Only if you have run the script before and the output folder exist)

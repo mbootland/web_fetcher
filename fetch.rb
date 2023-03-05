@@ -11,13 +11,12 @@ class WebPageFetcher
   def self.fetch(urls)
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
-    options.add_argument('--no-sandbox')
     driver = Selenium::WebDriver.for :chrome, options: options
 
     urls.each do |url|
       begin
         driver.navigate.to(url)
-        # sleep(3)
+        sleep(3)
         html = driver.page_source
         doc = Nokogiri::HTML(html)
 
@@ -83,7 +82,7 @@ class WebPageFetcher
         end
 
         # If srcset is present, change it to be equal to src (e.g. Google Logo)
-        img['srcset'] = img['src'] unless img['srcset']
+        img['srcset'] = img['src'] if img['srcset']
       elsif img.name == 'source'
         img_srcset = img['srcset']
         # Many URIs will be present in a single string, therefore must loop.
