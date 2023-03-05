@@ -1,9 +1,12 @@
 FROM selenium/standalone-chrome
 
+# Set the user as root (permission denied errors without this)
 USER root
+
+# Install Ruby
 RUN apt-get update && apt-get install -y ruby
 
-# Install the required gems
+# Install Ruby gems
 RUN gem install nokogiri selenium-webdriver
 
 # Set the working directory
@@ -15,5 +18,5 @@ VOLUME ["/app/output"]
 # Copy the fetch.rb script to the container
 COPY ./fetch.rb ./fetch.rb
 
-# Run the Fetch.rb script and move generated files and assets to directory containing Dockerfile
+# Run the fetch.rb script and move the generated files to the output directory outside of the container
 CMD ["sh", "-c", "ruby fetch.rb https://www.google.com https://autify.com/ && mv *.html *.metadata assets /app/output"]
