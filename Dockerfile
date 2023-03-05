@@ -1,7 +1,10 @@
-FROM ruby:latest
+FROM selenium/standalone-chrome
+
+USER root
+RUN apt-get update && apt-get install -y ruby
 
 # Install the required gems
-RUN gem install nokogiri
+RUN gem install nokogiri selenium-webdriver
 
 # Set the working directory
 WORKDIR /app

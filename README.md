@@ -1,9 +1,9 @@
-Steps
+Steps (Assuming Docker is installed on your machine)
 - git clone https://github.com/mbootland/web_fetcher.git
 - cd web_fetcher/
 - rm -rf output (Only if you have run the script before and the output folder exist)
 - docker build -t fetcher .
-- docker run -v "$(pwd)/output:/app/output" fetcher
+- docker run --cpus=2 --memory=4g -v "$(pwd)/output:/app/output" fetcher
 - Output folder is created inside current directory (web_fetcher)
 
 Scope of completed work:
