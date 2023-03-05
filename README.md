@@ -21,7 +21,7 @@ Approach
 Limitations(due to time):
 - I have only tested the script on https://www.google.com and https://autify.com/
 - Only 'img, picture source, noscript img' are supported
-- img type 'source' can contain many images in 1 string, I'm counting them as 1 currently. If this is incorrect could loop
+- img type 'source' can contain many images in 1 string but I am just counting them as 1 for now. Parsing the string and looping would be the way to fix this
 - Headless browsers have some quirks e.g. there is a widget that displays a connection failure to connect on Google, this isn't present when I view it via my browser.
 - I dump all assets into a single assets folder. This is suboptimal as two assets from different websites could name clash causing a bug. I would create a seperate directory for each website if I had more time e.g. assets/google assets/autify
 - Possible HTML/CSS parsing errors due to my implementation not being generic. With more time I would test more websites.
