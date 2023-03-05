@@ -1,3 +1,4 @@
+# Using this image as I am using selenium with Chrome headless
 FROM selenium/standalone-chrome
 
 # Set the user as root (permission denied errors without this)
