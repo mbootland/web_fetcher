@@ -9,6 +9,8 @@ require 'uri'
 
 class WebPageFetcher
   def self.fetch(urls)
+
+    # Options to avoid crashes
     options = Selenium::WebDriver::Chrome::Options.new
     options.add_argument('--headless')
     options.add_argument('--no-sandbox')
@@ -16,9 +18,9 @@ class WebPageFetcher
     options.add_argument('--page-load-strategy=none')
     options.add_argument('--window-size=1920,1080')
     options.add_argument('--disable-gpu')
+
+    # Driver with options passed in
     driver = Selenium::WebDriver.for :chrome, options: options
-    driver.manage.timeouts.implicit_wait = 600 # Set wait time to 60 seconds
-    driver.manage.timeouts.page_load = 120
 
     urls.each do |url|
       begin
@@ -35,7 +37,7 @@ class WebPageFetcher
         # Set metadata
         num_links = doc.css('a').count
 
-        # See limitations on counting in the README file
+        # Only supporting these image types for now, see limitations in README
         num_images = doc.css('img, picture source, noscript img').count
         last_fetch = DateTime.now
 
@@ -58,11 +60,9 @@ class WebPageFetcher
         puts "num_images: #{metadata[:images]}"
         puts "last_fetch: #{metadata[:last_fetch]}"
       rescue StandardError => e
-        puts "Error while fetching #{url}: #{e.message}"
+        puts "Error while fetching #{url}: #{e.class}: #{e.message}\n#{e.backtrace.join("\n")}"
       end
     end
-  ensure
-    driver.quit if driver
   end
 
   def self.fix_image_urls(doc, url)
@@ -111,10 +111,27 @@ class WebPageFetcher
 
   def self.download_asset(url, filename)
     assets_dir = 'assets'
-    
     Dir.mkdir(assets_dir) unless File.directory?(assets_dir)
-    File.open("#{assets_dir}/#{filename}", 'wb') do |file|
-      file.write(URI.open(url).read)
+    
+    # Timeouts occur when downloading assets, therefore a retry mechanism is required.
+    retries = 0
+    begin
+      URI.open(url, open_timeout: 5, read_timeout: 30) do |io|
+        File.open("#{assets_dir}/#{filename}", 'wb') do |file|
+          file.write(io.read)
+        end
+      end
+    rescue Net::OpenTimeout, Net::ReadTimeout => e
+      retries += 1
+      if retries <= 3
+        puts "\nError while downloading #{url}: #{e.class}: #{e.message}. Retrying #{retries} of 3 times."
+        sleep 2
+        retry
+      else
+        puts "\nError while downloading #{url}: #{e.class}: #{e.message}. Max retries reached."
+      end
+    rescue StandardError => e
+      puts "\nError while downloading #{url}: #{e.class}: #{e.message}"
     end
   end
 end
