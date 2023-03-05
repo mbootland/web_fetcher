@@ -24,11 +24,11 @@ class WebPageFetcher
 
     urls.each do |url|
       begin
+        # Navigate to URL, extract HTML and create a new Nokogiri HTML document object
         driver.navigate.to(url)
-        html = driver.page_source
-        doc = Nokogiri::HTML(html)
+        doc = Nokogiri::HTML(driver.page_source)
 
-        # Save the web page to disk
+        # Save the HTML to disk
         filename = "#{URI(url).host}.html"
         File.open(filename, 'w') do |file|
           file.write(fix_image_urls(doc, url).to_html)
