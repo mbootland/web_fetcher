@@ -72,7 +72,7 @@ class WebPageFetcher
         end
 
         # If srcset is present, change it to be equal to src (e.g. Google Logo)
-        img['srcset'] = img['src'] unless img['srcset']
+        img['srcset'] = img['src'] if img['srcset']
       elsif img.name == 'source'
         img_srcset = img['srcset']
         # Many URIs will be present in a single string, therefore must loop.
