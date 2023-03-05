@@ -5,6 +5,7 @@ Steps (Assuming Docker is installed on your machine)
 - docker run -v "$(pwd)/output:/app/output" fetcher
 
 Notes: 
+- The output folder will appear in web_fetcher folder after running the script and it will contain the HTML files, metadata files and an asset folder
 - Please delete the output folder before re-running the docker run command
 
 Scope of completed work:
