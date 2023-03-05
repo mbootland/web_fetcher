@@ -15,6 +15,7 @@ class WebPageFetcher
     options.add_argument('--disable-dev-shm-usage')
     options.add_argument('--page-load-strategy=none')
     options.add_argument('--window-size=1920,1080')
+    options.add_argument('--disable-gpu')
     driver = Selenium::WebDriver.for :chrome, options: options
     driver.manage.timeouts.implicit_wait = 600 # Set wait time to 60 seconds
     driver.manage.timeouts.page_load = 120
