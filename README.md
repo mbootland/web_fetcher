@@ -7,6 +7,7 @@ Steps (Assuming Docker is installed on your machine)
 Notes: 
 - The output folder will appear in web_fetcher folder after running the script and it will contain the HTML files, metadata files and an asset folder
 - Please delete the output folder before re-running the docker run command
+- Additional/alternative URLs can be specified in the CMD statement in the Dockerfile
 
 Scope of completed work:
 - Section 1 + 2 and bonus
